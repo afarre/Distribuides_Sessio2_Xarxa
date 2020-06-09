@@ -165,6 +165,9 @@ public class SocketThread extends Thread {
             if (ti.getName().contains("LWA") && !ti.getName().equals(lr.getProcess())){
                 ti.getOutgoingSocket().sendRemove(lr);
             }
+            if (ti.getName().equals("HWA")){
+                ti.getOutgoingSocket().notifyChildrenDone(lr);
+            }
         }
     }
 }

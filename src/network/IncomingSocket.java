@@ -26,6 +26,7 @@ public class IncomingSocket extends Thread{
     private final static String ONLINE = "ONLINE";
     private final static String PORT = "PORT";
     private final static String LWA_WORK = "LWA_WORK";
+    private final static String LWA_DONE = "LWA_DONE";
 
     public IncomingSocket(Socket socket, SocketThread parent) {
         this.socket = socket;
@@ -76,9 +77,13 @@ public class IncomingSocket extends Thread{
             case "REMOVE":
                 parent.setCS(false);
                 String msg = diStream.readUTF();
+                System.out.println("Boom: " + msg) ;
                 Gson gson = new Gson();
                 LamportRequest lr = gson.fromJson(msg.replace(REMOVE_REQUEST,""), LamportRequest.class);
                 parent.notifyRemove(lr);
+                break;
+            case LWA_DONE:
+                System.out.println("Got all childs from HWA done with their shit.");
                 break;
         }
     }

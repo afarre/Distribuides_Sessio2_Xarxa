@@ -53,7 +53,7 @@ public class OutgoingSocket extends Thread{
                     work(name);
                     break;
                 case LAMPORT_REQUEST:
-                    sendLamport(/*outgoingRequest*/);
+                    sendLamport();
                     break;
                 case RESPONSE_REQUEST:
                     sendResponse(outgoingRequest);
@@ -110,6 +110,7 @@ public class OutgoingSocket extends Thread{
                 e.printStackTrace();
             }
         }
+        forwardingQueue.clear();
     }
 
     public void sendResponse(String outgoingRequest) {
@@ -146,6 +147,15 @@ public class OutgoingSocket extends Thread{
         forwardingQueue.add(msg);
         if (forwardingQueue.size() == 2){
             myNotify(LAMPORT_REQUEST);
+        }
+    }
+
+    public void notifyChildrenDone(LamportRequest lr) {
+        try {
+            doStream.writeUTF("LWA DONE");
+            doStream.writeUTF(lr.getProcess());
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }
